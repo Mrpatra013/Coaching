@@ -5,12 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import authClient from "@/lib/auth-client";
-import { GithubIcon, Loader } from "lucide-react";
-import { useTransition } from "react";
+import { GithubIcon, Loader, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export function LoginForm(){
+  const router = useRouter();
   const [githubPending , startGithubTransition] = useTransition();
+  const [emailPending , startEmailTransition] = useTransition();
+  const [email , setEmail] = useState("");
 
   async function signInWithGitHub() {
     startGithubTransition (async() => {
@@ -28,6 +32,26 @@ export function LoginForm(){
     });
     })
   }
+  
+  function signInWithEmail() {
+    startEmailTransition (async() => {
+      await authClient.emailOtp.sendVerificationOtp({
+        email:email,
+        type: 'sign-in',
+        fetchOptions: {
+          onSuccess: () =>{
+            toast.success("Email Sent");
+            router.push(`/verify-email`);
+          },
+          onError: () => {
+            toast.error("error sending Email");
+          },
+        },
+      });
+    })
+  }
+
+
   return (
     <Card>
       <CardHeader>
@@ -56,11 +80,21 @@ export function LoginForm(){
         <div className="grid gap-3 ">
           <div className="grid gap-2 ">
             <Label htmlFor="email">Email </Label>
-            <Input id="email" type="email" placeholder="abc@gmail.com" />
+            <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" type="email" placeholder="abc@gmail.com" required />
           </div>
 
-          <Button>
-            Continue with Email
+          <Button disabled={emailPending} onClick={signInWithEmail}>
+            {emailPending ? (
+              <>
+                <Loader className = "size-4 animate-spin" />
+                <span>Loading...</span>
+              </>
+            ):(
+              <>
+                <Send className="size-4" />
+                <span> Continue with Email</span>
+              </>
+            )}
           </Button>
         </div>
       </CardContent>
