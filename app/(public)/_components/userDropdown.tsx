@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, HelpCircle, Home, LayoutDashboardIcon, LogOut, Settings, User } from "lucide-react"
+import { BookOpen, Home, LayoutDashboardIcon, LogOut,  } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,45 +13,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import authClient from "@/lib/auth-client"
+import useSignOut from "@/hooks/use-signout"
 
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+interface iAppProps{
+  name:string;
+  email:string;
+  image:string;
+}
 
 
 
-export function Component(){
-  const router = useRouter();
+export function Component({name,email,image}:iAppProps){
 
-  async function signOut(){
-    await authClient.signOut({
-  fetchOptions: {
-    onSuccess: () => {
-      router.push("/"); // redirect to login page
-      toast.success("Logout Successful");
-    },
-    onError: () => {
-      toast.error("Logout Failed");
-    }
-  },
-});
-  }
+  const handleSignOut = useSignOut();
 
   return(
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button className="relative h-10 w-10 rounded-full" variant="ghost">
         <Avatar>
-          <AvatarImage alt="U" src="https://github.com/haydenbleasel.png" />
-          <AvatarFallback>HB</AvatarFallback>
+          <AvatarImage src={image} alt={name}/>
+          <AvatarFallback>{name && name.length > 0 ?name.charAt(0).toUpperCase() : email.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="center" className="w-46 mt-5">
       <DropdownMenuLabel className="font-normal">
         <div className="flex flex-col space-y-1">
-          <span className="font-medium text-sm leading-none">Hayden Bleasel</span>
-          <span className="text-muted-foreground text-xs leading-none">hello@haydenbleasel.com</span>
+          <span className="font-medium text-sm leading-none">{name}</span>
+          <span className="text-muted-foreground text-xs leading-none">{email}</span>
         </div>
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
@@ -76,7 +66,7 @@ export function Component(){
       </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuItem variant="destructive" onClick={signOut}>
+      <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
         <LogOut />
         Log out
       </DropdownMenuItem>
