@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
-import { CloudUploadIcon, ImageIcon } from "lucide-react";
+import { CloudUploadIcon, ImageIcon, Loader2, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 export function RenderEmptyState({isDragActive}: {isDragActive: boolean})
 {
@@ -34,6 +35,37 @@ export function RenderErrorState(){
       <p className="text-base font-semibold">Upload Failed</p>
       <p className="text-xs mt-1 text-muted-foreground ">Something went wrong</p>
       <Button className="mt-4" type="button">Retry</Button>
+    </div>
+  )
+}
+
+export function RenderUploadedState({previewUrl,isDeleting,handdleRemoveFile}: {previewUrl: string, isDeleting: boolean, handdleRemoveFile: () => void})
+{
+  return(
+    <div>
+      <Image src={previewUrl} alt="preview" className="object-contain p-2" fill />
+      <Button variant="destructive" size="icon" className={cn("absolute top-4 right-4")}
+        onClick={handdleRemoveFile}
+        disabled={isDeleting}
+      >
+        {isDeleting ? (
+          <Loader2 className="size-4 animate-spin"/>
+        ):(
+          <XIcon className="size-4"/>
+        )}
+      </Button>
+    </div>
+    
+  )
+}
+
+export function RenderUploadingState({progress,file}: {progress: number, file: File})
+{
+  return(
+    <div className="text-center flex justify-center items-center flex-col">
+      <p>{progress}%</p>
+      <p className="mt-2 text-sm fonty-medium text-foreground ">Uploading....</p>
+      <p className="text-xs mt-1 text-muted-foreground truncate max-w-xs ">{file.name}</p>
     </div>
   )
 }

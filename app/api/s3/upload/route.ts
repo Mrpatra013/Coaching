@@ -6,6 +6,9 @@ import { env } from "@/lib/env";
 import { getSignedUrl} from "@aws-sdk/s3-request-presigner";
 
 import { S3 } from "@/lib/S3Client";
+import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const uploadSchema = z.object({
   fileName: z.string().min(1,{message:"File name is required"}),
@@ -14,8 +17,33 @@ export const uploadSchema = z.object({
   isImage: z.boolean(),
 })
 
+const aj = arcjet.withRule(
+  detectBot({
+    mode:"LIVE",
+    allow:[],
+  })
+).withRule(
+  fixedWindow({
+    mode:"LIVE",
+    window:"1m",
+    max:5,
+  })
+)
+
 export async function POST(req: Request) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
   try {
+    
+    const decision = await aj.protect(req ,{fingerprint:session?.user.id as string});
+
+    if(decision.isDenied()){
+      return NextResponse.json({error:"dudde not good"},{status:429});
+    }
+
+
     const body = await req.json();
     const validation = uploadSchema.safeParse(body);
     if(!validation.success){
@@ -53,4 +81,8 @@ export async function POST(req: Request) {
       {status:500}
     );
   }
+}
+
+function fingerprint(arg0: string): { fingerprint: string | number | boolean; } {
+  throw new Error("Function not implemented.");
 }
