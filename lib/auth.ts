@@ -1,3 +1,7 @@
+import "server-only"
+
+
+
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
@@ -17,7 +21,7 @@ export const auth = betterAuth({
     },
     plugins: [
       emailOTP({
-        async sendVerificationOTP({email, otp}){
+        async sendVerificationOTP({ email, otp }: { email: string; otp: string }) {
           // implement sending the email to user
         await resend.emails.send({
       from: 'Pathshalaa <onboarding@grfti.in>',

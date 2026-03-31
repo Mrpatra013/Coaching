@@ -5,8 +5,6 @@ import { Menubar } from "./Menubar";
 import TextAlign from "@tiptap/extension-text-align";
 
 
-
-
 export function Editor({field}:{field:any}) {
   const editor = useEditor({
     extensions: [StarterKit, TextAlign.configure({ types: ["heading", "paragraph"] })],

@@ -13,6 +13,7 @@ import { PlusIcon, SparkleIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Editor } from "@/components/text-editor/Editor";
+import { Uploader } from "@/components/filer-uploader/Uploader";
 
 export default function CreateCourse() {
   const form = useForm<CourseSchemaType>({
@@ -114,7 +115,6 @@ export default function CreateCourse() {
                         <FormLabel>Description</FormLabel>
                         <FormControl>
                           <Editor field={field} />
-                          {/* <Textarea {...field} placeholder="Enter course description" className="min-h-30"/> */}
                         </FormControl>
                         <FormMessage/>
                       </FormItem>
@@ -127,7 +127,8 @@ export default function CreateCourse() {
                       <FormItem className="w-full">
                         <FormLabel>Thumbnail Image</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter course thumbnail image " />
+                          <Uploader />
+                          {/* <Input {...field} placeholder="Enter course thumbnail image " /> */}
                         </FormControl>
                         <FormMessage/>
                       </FormItem>
