@@ -18,10 +18,10 @@ export default async function EditCourse({params}:{params:Params}) {
 
       <Tabs defaultValue="basic-info" className="w-full">
         <TabsList className="grid grid-cols-2 w-full">
-          <TabsTrigger value="baic-info">Basic Info</TabsTrigger>
+          <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
           <TabsTrigger value="course-structure">Course Structure</TabsTrigger>
         </TabsList>
-        <TabsContent value="baic-info">
+        <TabsContent value="basic-info">
           <Card>
             <CardHeader>
               <CardTitle>Basic Info</CardTitle>
