@@ -20,4 +20,23 @@ export const courseSchema = z.object({
   status: z.enum(courseStatus,{message:"Status is required"}),
 })
 
+
+export const chapterSchema = z.object({
+  name: z.string().min(3,{message: "Chapter name must be atleast 3 characters long"}),
+  courseId: z.string().uuid({message:"Course ID must be a valid UUID"}),
+})
+
+export const lessonSchema = z.object({
+  name: z.string().min(3,{message: "Lesson name must be atleast 3 characters long"}),
+  courseId: z.string().uuid({message:"Course ID must be a valid UUID"}),
+  chapterId: z.string().uuid({message:"Chapter ID must be a valid UUID"}),
+  description: z.string().min(3,{message:"Description must be at least 3 characters long"}),
+  thumbnailKey: z.string().optional(),
+  videoKey: z.string().optional(),
+})
+
+
+
+export type LessonSchemaType = z.infer<typeof lessonSchema>;
 export type CourseSchemaType = z.infer<typeof courseSchema>;
+export type ChapterSchemaType = z.infer<typeof chapterSchema>;
