@@ -18,7 +18,7 @@ export function Editor({field}:{field:any}) {
       field.onChange(JSON.stringify(editor.getJSON()))  
     },
 
-    content: field.value ? JSON.parse(field.value):'<p>hello</p>'
+    content: field.value ?.startsWith('{') ? JSON.parse(field.value):'<p>Enter description here</p>'
   })
 
   return (

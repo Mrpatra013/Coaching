@@ -23,9 +23,10 @@ interface UploaderState{
 interface iAppProps {
   value?: string,
   onChange?: (value: string) => void,
+  fileTypeAccepted: "image" | "video",
 }
 
-export function Uploader({onChange,value}: iAppProps){
+export function Uploader({onChange,value,fileTypeAccepted}: iAppProps){
   const fileUrl = useConstruct(value || "");
   const [fileState, setFileState] = useState<UploaderState>({
     id: null,
@@ -34,13 +35,14 @@ export function Uploader({onChange,value}: iAppProps){
     progress: 0,
     isDeleting: false,
     error: false,
-    fileType: "image",
+    fileType: fileTypeAccepted,
     key: value,
-    objectUrl: fileUrl,
+    objectUrl: value ? fileUrl : undefined,
   });
 
-async  function uploadFile(file: File){
-    setFileState((prev)=>({
+  const uploadFile = useCallback(
+    async (file: File) => {
+      setFileState((prev)=>({
       ...prev,
       uploading: true,
       progress: 0,
@@ -57,7 +59,7 @@ async  function uploadFile(file: File){
           fileName: file.name,
           size: file.size,
           contentType: file.type,
-          isImage: true,
+          isImage: fileTypeAccepted === "image" ? true : false,
         }),
       })
 
@@ -121,7 +123,9 @@ async  function uploadFile(file: File){
         error: true,
       }));
     }
-  }
+  }, [fileTypeAccepted,onChange]);
+
+
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if(acceptedFiles.length > 0){
@@ -138,12 +142,12 @@ async  function uploadFile(file: File){
         error: false,
         id: uuidv4(),
         isDeleting: false,
-        fileType: "image",
+        fileType: fileTypeAccepted,
       })
 
       uploadFile(file)
     }
-  }, [fileState.objectUrl])
+  }, [fileState.objectUrl,uploadFile,fileTypeAccepted])
 
   async function handleRemoveFile(){
     if(fileState.isDeleting || !fileState.objectUrl){
@@ -190,7 +194,7 @@ async  function uploadFile(file: File){
         isDeleting: false,
         error: false,
         objectUrl: undefined,
-        fileType: "image",
+        fileType: fileTypeAccepted,
       }));
 
       toast.success("File deleted successfully")
@@ -231,7 +235,7 @@ async  function uploadFile(file: File){
     }
     
     if(fileState.objectUrl){
-      return <RenderUploadedState previewUrl={fileState.objectUrl} isDeleting={fileState.isDeleting} handdleRemoveFile={handleRemoveFile} />
+      return <RenderUploadedState previewUrl={fileState.objectUrl} isDeleting={fileState.isDeleting} handdleRemoveFile={handleRemoveFile} fileType={fileState.fileType} />
     }
 
     return <RenderEmptyState isDragActive={isDragActive} />
@@ -247,10 +251,10 @@ async  function uploadFile(file: File){
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
-    accept: {"image/*":[]},
+    accept: fileTypeAccepted === "video" ? {"video/*":[]} : {"image/*":[]},
     maxFiles: 1,
     multiple:false,
-    maxSize: 5*1024*1024, // 5mb
+    maxSize: fileTypeAccepted === "image" ? 5*1024*1024 : 5000*1024*1024,  // 5mb for image and 5gb for video
     onDropRejected: rejectedFiles,
     disabled: fileState.uploading || !! fileState.objectUrl,
 

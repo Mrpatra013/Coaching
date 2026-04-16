@@ -7,8 +7,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { AdminCourseSingularType } from "@/app/data/admin/admin-get-course";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { getStackedDataOfItem } from "recharts/types/util/ChartUtils";
-import { ChevronDown, ChevronRight, FileText, GripVertical, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -241,7 +240,11 @@ export function CourseStructure({data}:iAppProps){
   }
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor,{
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -296,10 +299,11 @@ export function CourseStructure({data}:iAppProps){
                                         <GripVertical className="size-4"/>
                                       </Button>
                                       <FileText className="size-4"/>
-                                      <Link href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}>
+                                      <Link  href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`} >
                                         {lesson.title}
                                       </Link>
                                     </div>
+                                    
                                     <DeleteLesson lessonId={lesson.id} chapterId={item.id} courseId={data.id}/>
                                   </div>
                                 )}
