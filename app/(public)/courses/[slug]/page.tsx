@@ -1,4 +1,5 @@
 import { getIndividualCourse } from "@/app/data/course/get-course";
+import { userIsEnrolled } from "@/app/data/user/user-is-enrolled";
 import { Badge } from "@/components/ui/badge";
 import { useConstruct } from "@/hooks/use-construct";
 import Image from "next/image";
@@ -8,13 +9,17 @@ import { RenderDescription } from "@/components/text-editor/RenderDescription";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Card, CardContent } from "@/components/ui/card";
 import { IconBook, IconCategory, IconChartBar, IconClock, IconPlayerPlay } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { EnrollButton } from "./_components/EnrollButton";
+import Link from "next/link";
 
 type Params = Promise<{slug:string}>;
 
 export default async function CourseDetailRoute({params}: {params:Params}){
   const {slug} = await params;
   const course = await getIndividualCourse(slug);
+  // Derived server-side flag to switch CTA between enroll and watch.
+  const isEnrolled = await userIsEnrolled(course.id);
   const thumbnail = useConstruct(course.fileKey);
   return(
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 mt-5">
@@ -225,7 +230,14 @@ export default async function CourseDetailRoute({params}: {params:Params}){
 
 
 
-              <Button className="w-full">Enroll Now !</Button>
+              {isEnrolled ? (
+                // Paid users jump directly to learning dashboard.
+                <Link className={buttonVariants({className:"w-full"})} href="/dashboard">
+                  Watch Course
+                </Link>
+              ) : (
+                <EnrollButton courseId={course.id} courseName={course.title} />
+              )}
               <p className="mt-3 text-xs text-muted-foreground text-center">Every penny will worth it.</p>
 
 

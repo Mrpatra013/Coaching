@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import Script from "next/script";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" />
         <ThemeProvider
             attribute="class"
             defaultTheme="system"

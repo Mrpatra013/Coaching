@@ -183,3 +183,15 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* Keep course page visible behind Razorpay popup */
+body:has(.razorpay-container) {
+  background: transparent !important;
+}
+
+.razorpay-container,
+.razorpay-backdrop,
+div[style*="z-index: 2147483647"] {
+  background: rgb(15 23 42 / 42%) !important;
+  backdrop-filter: blur(1px);
+}

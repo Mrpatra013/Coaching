@@ -15,14 +15,18 @@ export const env = createEnv({
     AWS_ENDPOINT_URL_S3: z.string().min(1),
     AWS_ENDPOINT_URL_IAM: z.string().min(1),
     AWS_REGION: z.string().min(1),
+    RAZORPAY_KEY_ID: z.string().min(1),
+    RAZORPAY_KEY_SECRET: z.string().min(1),
   },
 
   client: {
     NEXT_PUBLIC_S3_BUCKET_NAME: z.string().min(1),
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1),
   },
 
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   experimental__runtimeEnv: {
     NEXT_PUBLIC_S3_BUCKET_NAME: process.env.NEXT_PUBLIC_S3_BUCKET_NAME,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
   }
 });

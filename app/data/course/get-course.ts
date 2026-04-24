@@ -1,44 +1,43 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 
-export async function getIndividualCourse(slug:string){
+export async function getIndividualCourse(slug: string) {
   const course = await prisma.course.findUnique({
-    where :{
-      slug : slug ,
+    where: {
+      slug: slug,
     },
-    select:{
-      id:true,
-      description:true,
-      title:true,
-      fileKey:true,
-      price:true,
-      duration:true,
-      level:true,
-      category:true,
-      smallDescription:true,
-      chapter:{
-        select:{
-          id:true,
-          title:true,
-          lessons:{
-            select:{
-              id:true,
-              title:true,
+    select: {
+      id: true,
+      description: true,
+      title: true,
+      fileKey: true,
+      price: true,
+      duration: true,
+      level: true,
+      category: true,
+      smallDescription: true,
+      chapter: {
+        select: {
+          id: true,
+          title: true,
+          lessons: {
+            select: {
+              id: true,
+              title: true,
             },
-            orderBy:{
-              position:'asc',
+            orderBy: {
+              position: "asc",
             },
           },
         },
-        orderBy:{
-          position:'asc',
+        orderBy: {
+          position: "asc",
         },
       },
-
     },
   });
 
-  if(!course){
+  if (!course) {
     return notFound();
   }
 
