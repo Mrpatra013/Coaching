@@ -1,3 +1,5 @@
+"use server-only"
+
 import Razorpay from 'razorpay'
 import { env } from '@/lib/env'
 
