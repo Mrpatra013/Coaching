@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,8 +8,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { CirclePlusIcon, MailIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { CirclePlusIcon } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export function NavMain({
   items,
@@ -20,11 +22,16 @@ export function NavMain({
     icon?: React.ReactNode
   }[]
 }) {
+
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
+        
+          {pathname.startsWith("/admin") && (
+            <SidebarMenu>
+            <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
             asChild
               tooltip="Quick Create"
@@ -36,11 +43,19 @@ export function NavMain({
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        </SidebarMenu>
+          </SidebarMenu>
+          )}
+        
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} asChild>
+              <SidebarMenuButton 
+                tooltip={item.title} 
+                asChild
+                className={cn(
+                  pathname === item.url && "bg-accent! text-accent-foreground! hover:bg-accent/90! hover:text-accent-foreground!"
+                )}
+              >
                 <Link href={item.url}>
                   {item.icon}
                 <span>{item.title}</span>
